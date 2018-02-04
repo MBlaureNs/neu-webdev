@@ -43,4 +43,19 @@ defmodule CalcTest do
     assert Calc.eval("6/3") == 2
     assert Calc.eval("7/3") == 2
   end
+
+  test "rte" do
+    assert_raise RuntimeError, fn -> Calc.eval("()") end
+    assert_raise RuntimeError, fn -> Calc.eval("((0)") end
+    assert_raise RuntimeError, fn -> Calc.eval("1++2") end
+    assert_raise RuntimeError, fn -> Calc.eval("+") end
+    assert_raise RuntimeError, fn -> Calc.eval("-12") end
+    assert_raise RuntimeError, fn -> Calc.eval("1+2+") end
+    assert_raise RuntimeError, fn -> Calc.eval("(0))") end
+    assert_raise RuntimeError, fn -> Calc.eval("+1+2") end
+  end
+
+  test "div zero" do
+    assert_raise ArithmeticError, fn -> Calc.eval("1/0") end
+  end
 end

@@ -83,6 +83,8 @@ defmodule Calc do
 	shuntyard([head|tail], tl(ops), [hd(ops)|out])
       head == "(" ->
 	shuntyard(tail, [head|ops], out)
+      head == ")" and length(ops) == 0 ->
+	raise "invalid input"
       head == ")" and hd(ops) != "(" ->
 	shuntyard([head|tail], tl(ops), [hd(ops)|out])
       head == ")" ->
@@ -90,6 +92,10 @@ defmodule Calc do
       true ->
 	shuntyard(tail, [head|ops], out)
     end
+  end
+
+  defp shuntyard(_, _, _) do
+    raise "invalid input"
   end
 
   # reverse polish notation evaluator referenced from:
@@ -103,6 +109,9 @@ defmodule Calc do
   end
 
   defp rpn([token|cdr_tokens], stack) when is_op(token) do
+    if length(stack) < 2 do
+      raise "invalid input"
+    end
     [car|cdr] = stack
     [cadr|cddr] = cdr
     rpn(cdr_tokens, [apply_op(cadr, token, car) | cddr])
@@ -110,6 +119,10 @@ defmodule Calc do
 
   defp rpn([token|cdr_tokens], stack) when is_integer(token) do
     rpn(cdr_tokens, [token|stack])
+  end
+
+  defp rpn(_, _) do
+    raise "invalid input"
   end
 
   @doc """
